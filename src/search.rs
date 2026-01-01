@@ -1,7 +1,5 @@
-pub fn search_in_file(args: Vec<String>) -> Result<String, String> {
-    let query = &args[1];
-    let file_name = &args[2];
-    println!("Searching for {}", query);
-    println!("In file {}", file_name);
-    Ok("1".to_string())
+use std::fs;
+
+pub fn search_in_file<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    vec![]
 }
