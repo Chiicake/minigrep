@@ -1,10 +1,9 @@
 mod search;
-mod lib;
 
 use std::{env, fs};
 use std::error::Error;
 use std::process;
-use lib::Config;
+use minigrep::Config;
 use crate::search::search_in_file;
 
 fn main() {
@@ -13,7 +12,7 @@ fn main() {
         println!("Problem parsing arguments: {}", err);
         process::exit(1);
     });
-    println!("Config: {:}", config);
+    println!("{:?}", config);
 
     if let Err(e) = run(config) {
         println!("Application error: {}", e);
@@ -24,5 +23,9 @@ fn main() {
 
 fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
+    let res = search_in_file(config.query.as_str(), &contents);
+    for line in res.iter() {
+        println!("{}", line);
+    }
     Ok(())
 }

@@ -1,5 +1,5 @@
 use std::fmt::{Display, Formatter};
-
+mod search;
 #[derive(Debug)]
 pub struct Config {
     pub query: String,
@@ -24,3 +24,21 @@ impl Config {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(
+                vec!["safe, fast, productive."],
+                search::search_in_file(query, contents)
+            );
+    }
+}
