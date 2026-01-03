@@ -1,14 +1,17 @@
 use std::fs;
 
 pub fn search_in_file<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let split = contents.split("\n").collect::<Vec<&str>>();
-    let mut res = Vec::new();
-    for line in split.iter() {
-        if line.contains(query) {
-            res.push(*line);
-        }
-    }
-    res
+    // let split = contents.split("\n").collect::<Vec<&str>>();
+    // let mut res = Vec::new();
+    // for line in split.iter() {
+    //     if line.contains(query) {
+    //         res.push(*line);
+    //     }
+    // }
+    // res
+    contents.lines()
+        .filter(|line| line.contains(query))
+        .collect()
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
