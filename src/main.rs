@@ -8,8 +8,8 @@ use minigrep::run;
 use crate::search::search_in_file;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let config = Config::new(args.as_slice()).unwrap_or_else(|err| {
+    let args= env::args();
+    let config = Config::new(args).unwrap_or_else(|err| {
         println!("Problem parsing arguments: {}", err);
         process::exit(1);
     });

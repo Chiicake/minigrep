@@ -1,12 +1,17 @@
 use std::error::Error;
 use std::fmt::{Display, Formatter};
-use std::fs;
+use std::{env, fs};
 use crate::search::search_in_file;
+use crate::search::search_case_insensitive;
+
 mod search;
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.filename)?;
-    let res = search_in_file(config.query.as_str(), &contents);
+    let res = match config.case_sensitive {
+        true => search_in_file(config.query.as_str(), &contents),
+        false => search_case_insensitive(config.query.as_str(), &contents),
+    };
     for line in res.iter() {
         println!("{}", line);
     }
@@ -17,6 +22,7 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 pub struct Config {
     pub query: String,
     pub filename: String,
+    pub case_sensitive: bool,
 }
 
 impl Display for Config {
@@ -26,16 +32,25 @@ impl Display for Config {
 }
 
 impl Config {
-    pub fn new(args: &'_ [String]) ->  Result<Config, &'_ str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
-        let query = args[1].clone();
-        let filename = args[2].clone();
+    pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
+        args.next();
 
-        Ok(Config { query, filename })
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file name"),
+        };
+
+        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+
+        Ok(Config { query, filename, case_sensitive })
     }
 }
+
 
 #[cfg(test)]
 mod tests {
