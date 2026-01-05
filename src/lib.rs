@@ -12,9 +12,9 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         true => search_in_file(config.query.as_str(), &contents),
         false => search_case_insensitive(config.query.as_str(), &contents),
     };
-    for line in res.iter() {
+    res.iter().for_each(|line| {
         println!("{}", line);
-    }
+    });
     Ok(())
 }
 
